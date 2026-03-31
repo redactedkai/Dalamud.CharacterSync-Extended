@@ -23,8 +23,8 @@ namespace Dalamud.CharacterSync
         {
             this.FileInterfaceOpenFileAddress = scanner.ScanText(FileInterfaceOpenFileSignature);
 
-            CharacterSyncPlugin.PluginLog.Verbose("===== CHARACTER SYNC =====");
-            CharacterSyncPlugin.PluginLog.Verbose($"{nameof(this.FileInterfaceOpenFileAddress)} {this.FileInterfaceOpenFileAddress:X}");
+            Service.PluginLog.Verbose("===== CHARACTER SYNC =====");
+            Service.PluginLog.Verbose($"{nameof(this.FileInterfaceOpenFileAddress)} {this.FileInterfaceOpenFileAddress:X}");
         }
     }
 }

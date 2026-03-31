@@ -67,7 +67,7 @@ namespace Dalamud.CharacterSync.Config
         /// <summary>
         /// Gets or sets the "set name".
         /// </summary>
-        public string SetName;
+        public string SetName = string.Empty;
 
         /// <summary>
         /// Gets or sets the number of backups to keep.

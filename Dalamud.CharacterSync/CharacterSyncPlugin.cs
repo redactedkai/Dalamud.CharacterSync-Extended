@@ -20,23 +20,20 @@ namespace Dalamud.CharacterSync
     /// </summary>
     internal class CharacterSyncPlugin : IDalamudPlugin
     {
-        public static IPluginLog PluginLog;
-
         private readonly WindowSystem windowSystem;
         private readonly ConfigWindow configWindow;
-
-        private Hook<FileInterfaceOpenFileDelegate>? openFileHook;
         private readonly Regex saveFolderRegex = new(
             @"(?<path>.*)FFXIV_CHR(?<cid>.*)\/(?!ITEMODR\.DAT|ITEMFDR\.DAT|GEARSET\.DAT|UISAVE\.DAT|.*\.log)(?<dat>.*)",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+        private Hook<FileInterfaceOpenFileDelegate>? openFileHook;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterSyncPlugin"/> class.
         /// </summary>
-        public CharacterSyncPlugin(IDalamudPluginInterface interf, IPluginLog pluginLog)
+        /// <param name="interf">PluginInterface from dalamud.</param>
+        public CharacterSyncPlugin(IDalamudPluginInterface interf)
         {
-            PluginLog = pluginLog;
-
             interf.Create<Service>();
 
             Service.Configuration = Service.Interface.GetPluginConfig() as CharacterSyncConfig ?? new CharacterSyncConfig();
@@ -54,8 +51,7 @@ namespace Dalamud.CharacterSync
                 ShowInHelp = true,
             });
 
-
-            PluginLog.Information($"Load Reason: {Service.Interface.Reason}");
+            Service.PluginLog.Information($"Load Reason: {Service.Interface.Reason}");
             switch (Service.Interface.Reason)
             {
                 case PluginLoadReason.Boot:
@@ -98,7 +94,9 @@ namespace Dalamud.CharacterSync
             [MarshalAs(UnmanagedType.LPWStr)] string filepath, // IntPtr pFilepath
             uint a3);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the plugin name.
+        /// </summary>
         public string Name => "Character Sync";
 
         /// <inheritdoc/>
@@ -117,15 +115,6 @@ namespace Dalamud.CharacterSync
         private void OnChatCommand(string command, string arguments)
         {
             this.configWindow.Toggle();
-        }
-
-        private void EnableFunctionality()
-        {
-            var address = new PluginAddressResolver();
-            address.Setup(Service.Scanner);
-
-            this.openFileHook = Service.Interop.HookFromAddress<FileInterfaceOpenFileDelegate>(address.FileInterfaceOpenFileAddress, this.OpenFileDetour);
-            this.openFileHook.Enable();
         }
 
         private void AttemptBackup()
@@ -161,14 +150,14 @@ namespace Dalamud.CharacterSync
 
                 if (!xivFolder.Exists)
                 {
-                    PluginLog.Error("Could not find XIV folder.");
+                    Service.PluginLog.Error("Could not find XIV folder.");
                     return;
                 }
 
                 foreach (var directory in xivFolder.GetDirectories("FFXIV_CHR*"))
                 {
                     var thisBackupFile = Path.Combine(thisBackupFolder, directory.Name);
-                    PluginLog.Information(thisBackupFile);
+                    Service.PluginLog.Information(thisBackupFile);
                     Directory.CreateDirectory(thisBackupFile);
 
                     foreach (var filePath in directory.GetFiles("*.DAT"))
@@ -177,12 +166,21 @@ namespace Dalamud.CharacterSync
                     }
                 }
 
-                PluginLog.Information("Backup OK!");
+                Service.PluginLog.Information("Backup OK!");
             }
             catch (Exception ex)
             {
-                PluginLog.Error(ex, $"Could not backup character data files.\n{ex.Message}");
+                Service.PluginLog.Error(ex, $"Could not backup character data files.\n{ex.Message}");
             }
+        }
+
+        private void EnableFunctionality()
+        {
+            var address = new PluginAddressResolver();
+            address.Setup(Service.Scanner);
+
+            this.openFileHook = Service.Interop.HookFromAddress<FileInterfaceOpenFileDelegate>(address.FileInterfaceOpenFileAddress, this.OpenFileDetour);
+            this.openFileHook.Enable();
         }
 
         private IntPtr OpenFileDetour(IntPtr pFileInterface, [MarshalAs(UnmanagedType.LPWStr)] string filepath, uint a3)
@@ -200,17 +198,17 @@ namespace Dalamud.CharacterSync
                         if (this.PerformRewrite(datName))
                         {
                             filepath = $"{rootPath}FFXIV_CHR{Service.Configuration.Cid:X16}/{datName}";
-                            PluginLog.Debug("REWRITE: " + filepath);
+                            Service.PluginLog.Debug("REWRITE: " + filepath);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                PluginLog.Error(ex, "ERROR in OpenFileDetour");
+                Service.PluginLog.Error(ex, "ERROR in OpenFileDetour");
             }
 
-            return this.openFileHook.Original(pFileInterface, filepath, a3);
+            return this.openFileHook!.Original(pFileInterface, filepath, a3);
         }
 
         private bool PerformRewrite(string datName)

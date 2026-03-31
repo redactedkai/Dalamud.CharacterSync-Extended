@@ -32,7 +32,7 @@ namespace Dalamud.CharacterSync.Interface
             ImGui.PopTextWrapPos();
             ImGui.Separator();
 
-            if (Service.ClientState.LocalPlayer == null)
+            if (Service.PlayerState.IsLoaded)
             {
                 ImGui.Text("Please log in before using this plugin.");
                 return;
@@ -40,10 +40,11 @@ namespace Dalamud.CharacterSync.Interface
 
             if (ImGui.Button("Set save data to current character"))
             {
-                Service.Configuration.Cid = Service.ClientState.LocalContentId;
-                Service.Configuration.SetName = $"{Service.ClientState.LocalPlayer.Name} on {Service.ClientState.LocalPlayer.HomeWorld.Value.Name}";
+                Service.Configuration.Cid = Service.PlayerState.ContentId;
+                Service.Configuration.SetName =
+                    $"{Service.PlayerState.CharacterName} on {Service.PlayerState.HomeWorld.Value.Name}";
                 Service.Configuration.Save();
-                CharacterSyncPlugin.PluginLog.Info("CS saved.");
+                Service.PluginLog.Info("CS saved.");
             }
 
             if (Service.Configuration.Cid == 0)
@@ -58,8 +59,8 @@ namespace Dalamud.CharacterSync.Interface
 
             ImGui.Dummy(new Vector2(5, 5));
 
-            ImGui.Text($"The logged in character is {Service.ClientState.LocalPlayer.Name} on {Service.ClientState.LocalPlayer.HomeWorld.Value.Name}(FFXIV_CHR{Service.ClientState.LocalContentId:X16})");
-
+            ImGui.Text(
+                $"The logged in character is {Service.PlayerState.CharacterName} on {Service.PlayerState.HomeWorld.Value.Name}(FFXIV_CHR{Service.PlayerState.ContentId:X16}");
             ImGui.Dummy(new Vector2(20, 20));
 
             ImGui.Text("Backups to keep:");
@@ -74,7 +75,7 @@ namespace Dalamud.CharacterSync.Interface
                 }
                 catch (Exception e)
                 {
-                    CharacterSyncPlugin.PluginLog.Error(e, "Failed to open backups folder.");
+                    Service.PluginLog.Error(e, "Failed to open backups folder.");
                 }
             }
 
@@ -93,7 +94,7 @@ namespace Dalamud.CharacterSync.Interface
             {
                 this.IsOpen = false;
                 Service.Configuration.Save();
-                CharacterSyncPlugin.PluginLog.Information("CS saved.");
+                Service.PluginLog.Information("CS saved.");
             }
         }
     }
