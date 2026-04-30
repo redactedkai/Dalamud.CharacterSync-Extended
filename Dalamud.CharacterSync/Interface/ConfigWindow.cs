@@ -32,7 +32,7 @@ namespace Dalamud.CharacterSync.Interface
             ImGui.PopTextWrapPos();
             ImGui.Separator();
 
-            if (Service.PlayerState.IsLoaded)
+            if (!Service.PlayerState.IsLoaded)
             {
                 ImGui.Text("Please log in before using this plugin.");
                 return;

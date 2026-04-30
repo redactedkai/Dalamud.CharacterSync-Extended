@@ -52,9 +52,9 @@ namespace Dalamud.CharacterSync
         internal static IPlayerState PlayerState { get; private set; } = null!;
 
         /// <summary>
-        /// Gets the Dalamud plugin logger.
+        /// Gets or sets the Dalamud plugin logger.
         /// </summary>
-        internal static IPluginLog PluginLog { get; private set; } = null!;
+        internal static IPluginLog PluginLog { get;  set; } = null!;
 
         /// <summary>
         /// Gets the scanner.

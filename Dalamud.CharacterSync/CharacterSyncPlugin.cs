@@ -32,9 +32,11 @@ namespace Dalamud.CharacterSync
         /// Initializes a new instance of the <see cref="CharacterSyncPlugin"/> class.
         /// </summary>
         /// <param name="interf">PluginInterface from dalamud.</param>
-        public CharacterSyncPlugin(IDalamudPluginInterface interf)
+        /// <param name="logger">Dalamud provided logger for the plugin.</param>
+        public CharacterSyncPlugin(IDalamudPluginInterface interf, IPluginLog logger)
         {
             interf.Create<Service>();
+            Service.PluginLog = logger;
 
             Service.Configuration = Service.Interface.GetPluginConfig() as CharacterSyncConfig ?? new CharacterSyncConfig();
 
