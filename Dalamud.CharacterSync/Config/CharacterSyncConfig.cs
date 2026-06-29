@@ -60,6 +60,11 @@ namespace Dalamud.CharacterSync.Config
         public bool SyncCardSets = true;
 
         /// <summary>
+        /// Gets or sets a value indicating whether to sync the Command Panel (QPNL segment in UISAVE.DAT).
+        /// </summary>
+        public bool SyncCommandPanel = true;
+
+        /// <summary>
         /// Gets or sets the Character ID, the value after CHR_*.
         /// </summary>
         public ulong Cid;

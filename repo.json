@@ -1,0 +1,22 @@
+[
+  {
+    "Author": "redactedkai (originally by Xpahtalo)",
+    "Name": "Character Data Sync (Extended)",
+    "Description": "Sync your character data (hotbars, macros, keybinds, command panel, and more) from your main character to all your alts automatically on login. Now supports syncing the newly added command panel.",
+    "Punchline": "Sync your character data from your main to all your alts. This version also supports command panel syncing.",
+    "InternalName": "Dalamud.CharacterSync.Extended",
+    "AssemblyVersion": "1.0.0.0",
+    "RepoUrl": "https://github.com/redactedkai/Dalamud.CharacterSync-Extended",
+    "ApplicableVersion": "any",
+    "Tags": [ "character", "sync", "hotbar", "keybind", "command panel", "alt", "redactedkai" ],
+    "DalamudApiLevel": 15,
+    "IconUrl": "https://github.com/goaaats/Dalamud.CharacterSync/raw/master/res/icon.png",
+    "IsHide": false,
+    "IsTestingExclusive": false,
+    "LastUpdated": 1782691200,
+    "DownloadCount": 0,
+    "DownloadLinkInstall": "https://github.com/redactedkai/Dalamud.CharacterSync-Extended/releases/download/1.0.0.0/latest.zip",
+    "DownloadLinkTesting": "https://github.com/redactedkai/Dalamud.CharacterSync-Extended/releases/download/1.0.0.0/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/redactedkai/Dalamud.CharacterSync-Extended/releases/download/1.0.0.0/latest.zip"
+  }
+]

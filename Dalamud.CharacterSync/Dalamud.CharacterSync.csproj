@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup Label="Target">
-    <AssemblyVersion>2.1.1.1</AssemblyVersion>
+    <AssemblyName>Dalamud.CharacterSync.Extended</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Documentation">

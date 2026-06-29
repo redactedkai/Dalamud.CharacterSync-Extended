@@ -24,6 +24,21 @@ namespace Dalamud.CharacterSync.Interface
         /// <inheritdoc/>
         public override void Draw()
         {
+            if (CharacterSyncPlugin.NeedsRestart)
+            {
+                var warningMin = ImGui.GetCursorScreenPos();
+                var warningMax = new System.Numerics.Vector2(
+                    warningMin.X + ImGui.GetContentRegionAvail().X,
+                    warningMin.Y + 36);
+                ImGui.GetWindowDrawList().AddRectFilled(warningMin, warningMax, 0xFF0070CC);
+                ImGui.SetCursorScreenPos(new System.Numerics.Vector2(warningMin.X + 8, warningMin.Y + 9));
+                ImGui.PushStyleColor(ImGuiCol.Text, new System.Numerics.Vector4(1f, 1f, 1f, 1f));
+                ImGui.TextUnformatted("⚠  Sync is disabled — restart your game for the plugin to take effect.");
+                ImGui.PopStyleColor();
+                ImGui.SetCursorScreenPos(new System.Numerics.Vector2(warningMin.X, warningMax.Y + 4));
+                ImGui.Spacing();
+            }
+
             ImGui.PushTextWrapPos();
             ImGui.Text("This window allows you to configure Character Sync.");
             ImGui.Text("Click the button below while being logged in on your main character - all logins from now on will use this character's save data!");
@@ -71,6 +86,7 @@ namespace Dalamud.CharacterSync.Interface
                 var path = Path.Combine(Service.Interface.GetPluginConfigDirectory(), "backups");
                 try
                 {
+                    Directory.CreateDirectory(path);
                     Utility.Util.OpenLink(path);
                 }
                 catch (Exception e)
@@ -87,6 +103,7 @@ namespace Dalamud.CharacterSync.Interface
             ImGui.Checkbox("Sync Keyboard Settings", ref Service.Configuration.SyncKeyboardSettings);
             ImGui.Checkbox("Sync Gamepad Settings", ref Service.Configuration.SyncGamepadSettings);
             ImGui.Checkbox("Sync Card Sets and Verminion Settings", ref Service.Configuration.SyncCardSets);
+            ImGui.Checkbox("Sync Command Panel", ref Service.Configuration.SyncCommandPanel);
 
             ImGui.Separator();
 

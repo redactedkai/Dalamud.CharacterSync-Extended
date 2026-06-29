@@ -27,6 +27,9 @@ namespace Dalamud.CharacterSync
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private Hook<FileInterfaceOpenFileDelegate>? openFileHook;
+        private CommandPanelSync? commandPanelSync;
+
+        internal static bool NeedsRestart { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterSyncPlugin"/> class.
@@ -59,8 +62,10 @@ namespace Dalamud.CharacterSync
                 case PluginLoadReason.Boot:
                     this.AttemptBackup();
                     this.EnableFunctionality();
+                    this.commandPanelSync = new CommandPanelSync();
                     break;
                 case PluginLoadReason.Installer:
+                    NeedsRestart = true;
                     Service.NotificationManager.AddNotification(new Notification
                     {
                         Content = "Character Data Sync has been installed, but it won't do anything until you configure it and restart your game. Please use /pcharsync to access the settings.",
@@ -71,6 +76,7 @@ namespace Dalamud.CharacterSync
                     });
                     break;
                 case PluginLoadReason.Update:
+                    NeedsRestart = true;
                     Service.NotificationManager.AddNotification(new Notification
                     {
                         Content = "Character Data Sync has been updated. It will not function until you restart your game.",
@@ -80,6 +86,7 @@ namespace Dalamud.CharacterSync
                     });
                     break;
                 default:
+                    NeedsRestart = true;
                     Service.NotificationManager.AddNotification(new Notification
                     {
                         Content = "Character Data Sync has been loaded in the middle of gameplay so it has automatically disabled itself. It will not function until you restart your game.",
@@ -106,6 +113,7 @@ namespace Dalamud.CharacterSync
         {
             Service.CommandManager.RemoveHandler("/pcharsync");
             Service.Interface.UiBuilder.Draw -= this.windowSystem.Draw;
+            this.commandPanelSync?.Dispose();
             this.openFileHook?.Dispose();
         }
 
