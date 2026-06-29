@@ -87,6 +87,7 @@ namespace Dalamud.CharacterSync.Interface
             ImGui.Checkbox("Sync Keyboard Settings", ref Service.Configuration.SyncKeyboardSettings);
             ImGui.Checkbox("Sync Gamepad Settings", ref Service.Configuration.SyncGamepadSettings);
             ImGui.Checkbox("Sync Card Sets and Verminion Settings", ref Service.Configuration.SyncCardSets);
+            ImGui.Checkbox("Sync Command Panel", ref Service.Configuration.SyncCommandPanel);
 
             ImGui.Separator();
 

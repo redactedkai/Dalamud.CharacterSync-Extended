@@ -27,6 +27,7 @@ namespace Dalamud.CharacterSync
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private Hook<FileInterfaceOpenFileDelegate>? openFileHook;
+        private CommandPanelSync? commandPanelSync;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterSyncPlugin"/> class.
@@ -59,6 +60,7 @@ namespace Dalamud.CharacterSync
                 case PluginLoadReason.Boot:
                     this.AttemptBackup();
                     this.EnableFunctionality();
+                    this.commandPanelSync = new CommandPanelSync();
                     break;
                 case PluginLoadReason.Installer:
                     Service.NotificationManager.AddNotification(new Notification
@@ -106,6 +108,7 @@ namespace Dalamud.CharacterSync
         {
             Service.CommandManager.RemoveHandler("/pcharsync");
             Service.Interface.UiBuilder.Draw -= this.windowSystem.Draw;
+            this.commandPanelSync?.Dispose();
             this.openFileHook?.Dispose();
         }
 
